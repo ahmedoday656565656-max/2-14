@@ -3,86 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إليكِ مع التحية</title>
+    <title>إليكِ</title>
     <style>
         :root {
-            --bg-start: #e9e4f0;
-            --bg-end: #d3d3d3;
-            --accent: #5d5d5d;
-            --text: #444444;
+            --bg: #f2f0eb;
+            --card: #ffffff;
+            --text: #4a4a4a;
+            --accent: #8c7b6c;
         }
 
         body {
             margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center;
-            height: 100vh;
-            /* خلفية متدرجة تتحرك */
-            background: linear-gradient(270deg, var(--bg-start), var(--bg-end));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text);
+            height: 100vh; background-color: var(--bg);
+            font-family: 'Times New Roman', serif; color: var(--text);
             overflow: hidden;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .container {
             width: 80%; max-width: 380px;
-            padding: 50px 30px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px); /* تأثير الزجاج الضبابي */
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            padding: 60px 30px;
+            background: var(--card);
+            border-radius: 4px; /* زوايا كلاسيكية */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
             text-align: center;
-            transition: all 0.8s ease;
+            transition: opacity 1s ease-in-out;
         }
 
         h2 {
-            font-weight: 300; font-size: 1.2rem; line-height: 1.8;
-            margin-bottom: 40px; min-height: 80px;
+            font-weight: 300; font-size: 1.25rem; line-height: 1.8;
+            margin-bottom: 50px; min-height: 100px;
+        }
+
+        .btn-wrapper { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+
+        button {
+            background: none; border: 1px solid var(--accent);
+            padding: 12px 20px; color: var(--accent);
+            cursor: pointer; font-size: 0.95rem; width: 100%;
+            max-width: 220px; transition: all 0.5s ease;
             letter-spacing: 0.5px;
         }
 
-        .btn-wrapper { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-
-        button {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--accent);
-            padding: 14px 40px;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
-            max-width: 240px;
-            border-radius: 50px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            outline: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-
-        /* تفاعل الزر */
         button:hover, button:active {
-            transform: scale(1.05);
             background: var(--accent);
             color: white;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
-        #no-btn {
-            border: none; background: none; font-size: 0.8rem;
-            text-decoration: underline; opacity: 0.5; color: var(--text);
-            box-shadow: none;
+        #decline-btn {
+            border: none; opacity: 0.5; font-size: 0.85rem;
+            text-decoration: underline; margin-top: 10px;
         }
-        #no-btn:hover { background: none; color: #880e4f; transform: none; }
 
-        .fade-in { animation: fadeIn 1s forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 1.2s forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -92,9 +66,9 @@
     </audio>
 
     <div class="container" id="box">
-        <h2 id="text" class="fade-in">مرت سنوات طويلة، أليس كذلك؟</h2>
+        <h2 id="text" class="fade-in">مرت سنوات.. وتغير فينا كل شيء، إلا ما كنتُ أشعر به اتجاهكِ.</h2>
         <div class="btn-wrapper" id="actions">
-            <button onclick="initAudio()">نعم، طويلة جداً</button>
+            <button onclick="initAudio()">أتفهم ذلك</button>
         </div>
     </div>
 
@@ -104,7 +78,7 @@
 
         function initAudio() {
             if (!isPlaying) {
-                myAudio.play().catch(e => console.log("Audio waiting for interaction"));
+                myAudio.play().catch(e => console.log("Audio play failed"));
                 isPlaying = true;
             }
             step(1);
@@ -112,18 +86,18 @@
 
         const story = [
             {
-                text: "رغم كل الغياب والمسافات، ما زال لذكراكِ هدوء لا يملكه غيركِ.",
-                btn: "لماذا الآن؟",
+                text: "لم يكن الغياب سهلاً، ولم يكن نسيانكِ ممكناً.. كنتِ دائماً الجزء الأجمل في ذاكرتي المتعبة.",
+                btn: "لماذا عدت الآن؟",
                 action: "step(2)"
             },
             {
-                text: "لأن المشاعر الصادقة لا تنتهي بانتهاء الوقت، بل تنضج لتصبح أكثر عمقاً.",
-                btn: "تحدث أكثر",
+                text: "لأنني أدركت بعد كل هذه السنين، أنني لا أريد أن أعيش خريفاً آخر دون أن أعتذر لكِ.. ودون أن أخبركِ بمكاني.",
+                btn: "أكمل حديثك",
                 action: "step(3)"
             },
             {
-                text: "في هذا اليوم، أردت فقط أن أذكركِ بأنني لم أنسَ الأيام الجميلة يوماً.",
-                btn: "ماذا تريد إذاً؟",
+                text: "أعلم أن الوقت قد غيّر ملامحنا وظروفنا، لكنني ما زلت أحمل لكِ في قلبي صدقاً لا يصدأ.",
+                btn: "وماذا ترجو؟",
                 action: "step(4)"
             }
         ];
@@ -133,8 +107,7 @@
             const text = document.getElementById('text');
             const actions = document.getElementById('actions');
 
-            text.style.opacity = '0';
-            actions.style.opacity = '0';
+            box.style.opacity = '0';
 
             setTimeout(() => {
                 if (index <= story.length) {
@@ -142,43 +115,38 @@
                     text.innerText = current.text;
                     actions.innerHTML = `<button onclick="ensurePlay(); ${current.action}">${current.btn}</button>`;
                 } else {
-                    text.innerText = "هل يمكننا أن نبدأ من جديد، ونعطي أنفسنا فرصة أخرى؟";
+                    text.innerText = "هل تقبلين أن نتجاوز ما مضى، ونمنح أرواحنا فرصة لنلتقي مجدداً بهدوء؟";
                     actions.innerHTML = `
-                        <button onclick="ensurePlay(); finish()">أقبل المحاولة</button>
-                        <button id="no-btn" onmouseover="escape()" ontouchstart="escape()">الوقت قد فات</button>
+                        <button onclick="ensurePlay(); finish()">أقبل التواصل</button>
+                        <button id="decline-btn" onclick="decline()">أفضل البقاء بعيداً</button>
                     `;
                 }
-                text.style.opacity = '1';
-                actions.style.opacity = '1';
-                text.classList.remove('fade-in');
-                void text.offsetWidth; // إعادة تشغيل الانيميشن
-                text.classList.add('fade-in');
-            }, 500);
+                box.style.opacity = '1';
+            }, 800);
         }
 
         function ensurePlay() { if (myAudio.paused) myAudio.play(); }
-
-        function escape() {
-            const b = document.getElementById('no-btn');
-            b.style.position = 'fixed';
-            b.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            b.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-        }
 
         function finish() {
             const box = document.getElementById('box');
             box.style.opacity = '0';
             setTimeout(() => {
                 box.innerHTML = `
-                    <h2 class="fade-in" style="font-style: italic;">شكراً لأنكِ منحتِ قلبي هذه اللحظة.. بانتظاركِ.</h2>
-                    <div class="fade-in" style="margin-top:20px; opacity:0.3;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                    </div>
+                    <h2 class="fade-in" style="font-style: italic;">شكراً لأن قلبكِ ما زال يتسع لي.. سأنتظر ردكِ بكل صبر.</h2>
                 `;
                 box.style.opacity = '1';
-            }, 600);
+            }, 800);
+        }
+
+        function decline() {
+            const box = document.getElementById('box');
+            box.style.opacity = '0';
+            setTimeout(() => {
+                box.innerHTML = `
+                    <h2 class="fade-in">أحترم قراركِ جداً.. ستبقى لكِ دائماً أطيب الذكريات في قلبي. شكراً لكِ.</h2>
+                `;
+                box.style.opacity = '1';
+            }, 800);
         }
     </script>
 </body>
