@@ -1,140 +1,17 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رسالة لم يطوها الزمن</title>
-    <style>
-        :root {
-            --bg-color: #d6d2c4; 
-            --card-bg: #e4e0d5;
-            --text-color: #55504a;
-            --accent: #7a7369;
-        }
-
-        body {
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; background-color: var(--bg-color);
-            font-family: 'Times New Roman', serif; color: var(--text-color);
-            overflow: hidden;
-        }
-
-        .container {
-            width: 85%; max-width: 400px; text-align: center;
-            padding: 45px 25px; background-color: var(--card-bg);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            transition: opacity 1s ease;
-            position: relative;
-        }
-
-        h2 { font-weight: 300; font-size: 1.25rem; line-height: 1.8; margin-bottom: 40px; min-height: 80px; }
-
-        .btn-wrapper { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-
-        button {
-            background: none; border: 1px solid var(--accent);
-            padding: 12px 30px; color: var(--accent);
-            cursor: pointer; font-size: 0.9rem; width: 100%;
-            max-width: 200px; transition: all 0.4s;
-        }
-
-        button:hover { background-color: var(--accent); color: #fff; }
-
-        #no-btn { border: none; font-size: 0.8rem; opacity: 0.5; text-decoration: underline; }
-
-        svg { fill: var(--accent); opacity: 0.6; margin-top: 25px; }
-
-        /* أيقونة صوت صغيرة جداً بالزاوية */
-        .audio-indicator {
-            position: absolute; top: 15px; right: 15px;
-            font-size: 0.7rem; opacity: 0.4; letter-spacing: 1px;
-        }
-    </style>
-</head>
-<body>
-
-    <audio id="myAudio" loop>
-        <source src="music.mp3" type="audio/mpeg">
-        متصفحك لا يدعم تشغيل الصوت.
-    </audio>
-
-    <div class="container" id="box">
-        <div class="audio-indicator" id="status"></div>
-        <h2 id="text">مرت سنوات طويلة، أليس كذلك؟</h2>
-        <div class="btn-wrapper" id="actions">
-            <button onclick="startExperience()">نعم، طويلة جداً</button>
-        </div>
-    </div>
-
-    <script>
-        const myAudio = document.getElementById("myAudio");
+const myAudio = document.getElementById("myAudio");
         
-        const story = [
-            {
-                text: "رغم كل هذا الغياب، ورغم المسافات التي وضعتها الأيام بيننا، ما زال لذكراكِ مكانٌ لا يصله أحد.",
-                btn: "لماذا الآن؟",
-                action: "step(2)"
-            },
-            {
-                text: "لأن هناك مشاعر لا يطويها الزمن، ولأنني لم أجد في غيابكِ ما يعوضني عنكِ.",
-                btn: "تحدث أكثر",
-                action: "step(3)"
-            },
-            {
-                text: "في يوم الحب هذا، لم أرد أن يمر دون أن أخبركِ أنكِ ما زلتِ الخير الذي أتذكره دائماً بالدعاء.",
-                btn: "ماذا تريد إذاً؟",
-                action: "step(4)"
-            }
-        ];
-
         function startExperience() {
-            // تشغيل الموسيقى عند أول ضغطة (حل مشكلة الأيفون)
-            myAudio.play().catch(e => console.log("Audio play failed"));
+            // محاولة التشغيل مع معالجة الخطأ
+            let playPromise = myAudio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // اشتغلت الموسيقى
+                    console.log("Audio started");
+                }).catch(error => {
+                    // المتصفح منع التشغيل التلقائي
+                    console.log("Playback failed");
+                });
+            }
             step(1);
         }
-
-        function step(index) {
-            const box = document.getElementById('box');
-            box.style.opacity = '0';
-
-            setTimeout(() => {
-                const text = document.getElementById('text');
-                const actions = document.getElementById('actions');
-
-                if (index <= story.length) {
-                    const current = story[index - 1];
-                    text.innerText = current.text;
-                    actions.innerHTML = `<button onclick="${current.action}">${current.btn}</button>`;
-                } else {
-                    text.innerText = "هل يمكننا أن نمنح هذا الحب فرصة واحدة أخيرة، لنكتب نهاية تليق بنا؟";
-                    actions.innerHTML = `
-                        <button onclick="finish()">أقبل المحاولة</button>
-                        <button id="no-btn" onmouseover="escape()" ontouchstart="escape()">الوقت قد فات</button>
-                    `;
-                }
-                box.style.opacity = '1';
-            }, 800);
-        }
-
-        function escape() {
-            const b = document.getElementById('no-btn');
-            b.style.position = 'fixed';
-            b.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            b.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-        }
-
-        function finish() {
-            const box = document.getElementById('box');
-            box.style.opacity = '0';
-            setTimeout(() => {
-                box.innerHTML = `
-                    <h2 style="font-style: italic;">شكراً لأنكِ ما زلتِ هنا.. بانتظاركِ دائماً.</h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                `;
-                box.style.opacity = '1';
-            }, 800);
-        }
-    </script>
-</body>
-</html>
