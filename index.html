@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إليكِ</title>
+    <title>كلمات من القلب</title>
     <style>
         :root {
-            --bg: #f2f0eb;
-            --card: #ffffff;
+            --bg: #f4f1ea; 
             --text: #4a4a4a;
-            --accent: #8c7b6c;
+            --accent: #9b8c7d;
         }
 
         body {
@@ -21,28 +20,24 @@
         }
 
         .container {
-            width: 80%; max-width: 380px;
-            padding: 60px 30px;
-            background: var(--card);
-            border-radius: 4px; /* زوايا كلاسيكية */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            width: 85%; max-width: 400px;
             text-align: center;
+            padding: 40px 20px;
             transition: opacity 1s ease-in-out;
         }
 
         h2 {
-            font-weight: 300; font-size: 1.25rem; line-height: 1.8;
+            font-weight: 300; font-size: 1.2rem; line-height: 1.9;
             margin-bottom: 50px; min-height: 100px;
         }
 
-        .btn-wrapper { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-
         button {
             background: none; border: 1px solid var(--accent);
-            padding: 12px 20px; color: var(--accent);
-            cursor: pointer; font-size: 0.95rem; width: 100%;
-            max-width: 220px; transition: all 0.5s ease;
-            letter-spacing: 0.5px;
+            padding: 12px 35px; color: var(--accent);
+            cursor: pointer; font-size: 0.95rem; 
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            border-radius: 2px;
         }
 
         button:hover, button:active {
@@ -50,101 +45,63 @@
             color: white;
         }
 
-        #decline-btn {
-            border: none; opacity: 0.5; font-size: 0.85rem;
-            text-decoration: underline; margin-top: 10px;
-        }
-
-        .fade-in { animation: fadeIn 1.2s forwards; }
+        .fade-in { animation: fadeIn 1.5s forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop preload="auto" playsinline>
+    <audio id="myAudio" loop playsinline>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="box">
-        <h2 id="text" class="fade-in">مرت سنوات.. وتغير فينا كل شيء، إلا ما كنتُ أشعر به اتجاهكِ.</h2>
-        <div class="btn-wrapper" id="actions">
-            <button onclick="initAudio()">أتفهم ذلك</button>
+        <h2 id="text" class="fade-in">مرت سنين طويلة.. وحبيت بهيج يوم بس أوصلج رسالة بسيطة.</h2>
+        <div id="actions">
+            <button onclick="start()">تفضل</button>
         </div>
     </div>
 
     <script>
-        const myAudio = document.getElementById("myAudio");
+        const audio = document.getElementById("myAudio");
         let isPlaying = false;
 
-        function initAudio() {
-            if (!isPlaying) {
-                myAudio.play().catch(e => console.log("Audio play failed"));
-                isPlaying = true;
-            }
+        function start() {
+            if (!isPlaying) { audio.play(); isPlaying = true; }
             step(1);
         }
 
         const story = [
             {
-                text: "لم يكن الغياب سهلاً، ولم يكن نسيانكِ ممكناً.. كنتِ دائماً الجزء الأجمل في ذاكرتي المتعبة.",
-                btn: "لماذا عدت الآن؟",
-                action: "step(2)"
+                t: "الأيام اللي عشناها سوة، رغم إنها صارت بعيدة، بس بقت بذاكرتي كأجمل محطات حياتي.",
+                b: "شكراً لك"
             },
             {
-                text: "لأنني أدركت بعد كل هذه السنين، أنني لا أريد أن أعيش خريفاً آخر دون أن أعتذر لكِ.. ودون أن أخبركِ بمكاني.",
-                btn: "أكمل حديثك",
-                action: "step(3)"
+                t: "ما جيت حتى أطلب شي، ولا جيت حتى أفتح دفاتر قديمة.. جيت بس حتى أكولج: شكراً لأن جنتي بيوم من الأيام بحياتي.",
+                b: "كلام جميل"
             },
             {
-                text: "أعلم أن الوقت قد غيّر ملامحنا وظروفنا، لكنني ما زلت أحمل لكِ في قلبي صدقاً لا يصدأ.",
-                btn: "وماذا ترجو؟",
-                action: "step(4)"
+                t: "أتمنى من كل قلبي تكونين سعيدة وبخير، وين ما جنتي وبأي طريق اختاريته.",
+                b: "أتمنى لك المثل"
             }
         ];
 
         function step(index) {
             const box = document.getElementById('box');
-            const text = document.getElementById('text');
-            const actions = document.getElementById('actions');
-
             box.style.opacity = '0';
 
             setTimeout(() => {
+                const text = document.getElementById('text');
+                const actions = document.getElementById('actions');
+
                 if (index <= story.length) {
                     const current = story[index - 1];
-                    text.innerText = current.text;
-                    actions.innerHTML = `<button onclick="ensurePlay(); ${current.action}">${current.btn}</button>`;
+                    text.innerText = current.t;
+                    actions.innerHTML = `<button onclick="step(${index + 1})">${current.b}</button>`;
                 } else {
-                    text.innerText = "هل تقبلين أن نتجاوز ما مضى، ونمنح أرواحنا فرصة لنلتقي مجدداً بهدوء؟";
-                    actions.innerHTML = `
-                        <button onclick="ensurePlay(); finish()">أقبل التواصل</button>
-                        <button id="decline-btn" onclick="decline()">أفضل البقاء بعيداً</button>
-                    `;
+                    text.innerText = "كل عيد حب وأنتِ بخير.. وشكراً على كل ذكرى حلوة تركتيها بقلبي. وداعاً بسلام.";
+                    actions.innerHTML = `<div style="font-style: italic; opacity: 0.5; margin-top:20px;">انتهت الرسالة</div>`;
                 }
-                box.style.opacity = '1';
-            }, 800);
-        }
-
-        function ensurePlay() { if (myAudio.paused) myAudio.play(); }
-
-        function finish() {
-            const box = document.getElementById('box');
-            box.style.opacity = '0';
-            setTimeout(() => {
-                box.innerHTML = `
-                    <h2 class="fade-in" style="font-style: italic;">شكراً لأن قلبكِ ما زال يتسع لي.. سأنتظر ردكِ بكل صبر.</h2>
-                `;
-                box.style.opacity = '1';
-            }, 800);
-        }
-
-        function decline() {
-            const box = document.getElementById('box');
-            box.style.opacity = '0';
-            setTimeout(() => {
-                box.innerHTML = `
-                    <h2 class="fade-in">أحترم قراركِ جداً.. ستبقى لكِ دائماً أطيب الذكريات في قلبي. شكراً لكِ.</h2>
-                `;
                 box.style.opacity = '1';
             }, 800);
         }
