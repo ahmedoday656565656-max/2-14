@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رسالة من القلب</title>
+    <title>رسالة لم يطوها الزمن</title>
     <style>
         :root {
-            --bg-color: #faf9f6;
-            --accent-color: #8e735b;
-            --text-main: #4a4a4a;
+            --bg-color: #d6d2c4; /* لون رمادي بيج دافئ ورصين */
+            --card-bg: #e4e0d5;
+            --text-color: #55504a;
+            --accent: #7a7369;
         }
 
         body {
@@ -20,154 +21,138 @@
             height: 100vh;
             background-color: var(--bg-color);
             font-family: 'Times New Roman', serif;
-            color: var(--text-main);
+            color: var(--text-color);
             overflow: hidden;
         }
 
-        .card {
+        .container {
             width: 85%;
-            max-width: 450px;
+            max-width: 400px;
             text-align: center;
-            padding: 50px 30px;
-            background: #ffffff;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border-radius: 4px;
-            transition: opacity 0.8s ease-in-out;
+            padding: 40px 25px;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            transition: opacity 1s ease;
         }
 
         h2 {
             font-weight: 300;
-            font-size: 1.4rem;
-            line-height: 1.6;
+            font-size: 1.3rem;
+            line-height: 1.7;
             margin-bottom: 40px;
-            min-height: 80px; /* لضمان عدم قفز المحتوى */
+            min-height: 60px;
         }
 
-        .button-group {
+        .btn-wrapper {
             display: flex;
             flex-direction: column;
             gap: 15px;
             align-items: center;
-            min-height: 120px;
         }
 
         button {
             background: none;
-            border: 1px solid var(--accent-color);
-            padding: 12px 35px;
-            color: var(--accent-color);
+            border: 1px solid var(--accent);
+            padding: 12px 30px;
+            color: var(--accent);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 220px;
+            transition: all 0.4s;
             letter-spacing: 1px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 200px;
-            outline: none;
         }
 
         button:hover {
-            background: var(--accent-color);
-            color: white;
+            background-color: var(--accent);
+            color: #fff;
         }
 
-        /* زر الهروب */
-        #escape-btn {
-            border: none;
-            font-size: 0.75rem;
+        #small-link {
+            font-size: 0.8rem;
             text-decoration: underline;
-            opacity: 0.5;
-        }
-
-        .fade-out { opacity: 0; }
-        .fade-in { opacity: 1; }
-
-        /* القلب الرقيق في النهاية */
-        .final-heart {
+            opacity: 0.6;
             margin-top: 20px;
-            opacity: 0;
-            transition: opacity 2s;
+            border: none;
+            background: none;
+            cursor: pointer;
         }
+
+        .fade { animation: fadeIn 1.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        svg { fill: var(--accent); opacity: 0.7; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="card" id="main-card">
-        <h2 id="question-text">قبل أن نبدأ، هل لديكِ دقيقة واحدة لقلبي؟</h2>
-        <div class="button-group" id="btn-container">
-            <button onclick="nextStep(1)">لدي العمر كله</button>
+    <div class="container" id="box">
+        <h2 id="text">مرت سنوات طويلة، أليس كذلك؟</h2>
+        <div class="btn-wrapper" id="actions">
+            <button onclick="step(1)">نعم، طويلة جداً</button>
         </div>
     </div>
 
     <script>
-        const stages = [
+        const story = [
             {
-                text: "أتذكرين أول مرة تحدثنا فيها؟ منذ ذلك الحين والعالم يبدو أجمل.",
-                btnText: "أتذكر جيداً",
-                action: "nextStep(2)"
+                text: "رغم كل هذا الغياب، ورغم المسافات التي وضعتها الأيام بيننا، ما زال لذكراكِ مكانٌ لا يصله أحد.",
+                btn: "لماذا الآن؟",
+                action: "step(2)"
             },
             {
-                text: "كنتِ دائماً الشخص الذي أبحث عنه في زحام الأيام، ووجدت فيكِ السكينة.",
-                btnText: "أكمل القراءة",
-                action: "nextStep(3)"
+                text: "لأن هناك مشاعر لا يطويها الزمن، ولأنني لم أجد في غيابكِ ما يعوضني عنكِ.",
+                btn: "تحدث أكثر",
+                action: "step(3)"
             },
             {
-                text: "الحب ليس مجرد كلمة، هو مواقف.. وأنتِ كنتِ أجمل مواقفي.",
-                btnText: "وماذا بعد؟",
-                action: "nextStep(4)"
-            },
-            {
-                text: "الآن، وفي هذا اليوم المميز.. أود أن أسألكِ شيئاً مهماً جداً.",
-                btnText: "أنا أسمعك",
-                action: "nextStep(5)"
+                text: "في يوم الحب هذا، لم أرد أن يمر دون أن أخبركِ أنكِ ما زلتِ الخير الذي أتذكره دائماً بالدعاء.",
+                btn: "ماذا تريد إذاً؟",
+                action: "step(4)"
             }
         ];
 
-        function nextStep(step) {
-            const card = document.getElementById('main-card');
-            const textElement = document.getElementById('question-text');
-            const btnContainer = document.getElementById('btn-container');
-
-            card.style.opacity = '0';
+        function step(index) {
+            const box = document.getElementById('box');
+            box.style.opacity = '0';
 
             setTimeout(() => {
-                if (step <= stages.length) {
-                    const current = stages[step - 1];
-                    textElement.innerText = current.text;
-                    btnContainer.innerHTML = `<button onclick="${current.action}">${current.btnText}</button>`;
+                const text = document.getElementById('text');
+                const actions = document.getElementById('actions');
+
+                if (index <= story.length) {
+                    const current = story[index - 1];
+                    text.innerText = current.text;
+                    actions.innerHTML = `<button onclick="${current.action}">${current.btn}</button>`;
                 } else {
-                    // السؤال النهائي
-                    textElement.innerText = "هل تقبلين أن تكوني رفيقة دربي، وشريكة أيامي، وحبيبتي للأبد؟";
-                    btnContainer.innerHTML = `
-                        <button onclick="celebrate()">أقبل بكل حب</button>
-                        <button id="escape-btn" onmouseover="moveNo()" ontouchstart="moveNo()">لا أستطيع</button>
+                    text.innerText = "هل يمكننا أن نمنح هذا الحب فرصة واحدة أخيرة، لنكتب نهاية تليق بنا؟";
+                    actions.innerHTML = `
+                        <button onclick="finish()">أقبل المحاولة</button>
+                        <button id="no-btn" onmouseover="escape()" ontouchstart="escape()">الوقت قد فات</button>
                     `;
                 }
-                card.style.opacity = '1';
+                box.style.opacity = '1';
+                box.classList.add('fade');
             }, 800);
         }
 
-        function moveNo() {
-            const btn = document.getElementById('escape-btn');
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.position = 'fixed';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+        function escape() {
+            const b = document.getElementById('no-btn');
+            b.style.position = 'fixed';
+            b.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            b.style.top = Math.random() * (window.innerHeight - 50) + 'px';
         }
 
-        function celebrate() {
-            const card = document.getElementById('main-card');
-            card.style.opacity = '0';
+        function finish() {
+            const box = document.getElementById('box');
+            box.style.opacity = '0';
             setTimeout(() => {
-                card.innerHTML = `
-                    <h2 style="font-style: italic;">سأجعل كل يوم في حياتنا هو عيد حب.. شكراً لأنكِ اخترتيني.</h2>
-                    <div class="final-heart" id="f-heart">
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="#8e735b">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                    </div>
+                box.innerHTML = `
+                    <h2>شكراً لأنكِ ما زلتِ هنا.. بانتظاركِ دائماً.</h2>
+                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 `;
-                card.style.opacity = '1';
-                setTimeout(() => { document.getElementById('f-heart').style.opacity = '1'; }, 500);
+                box.style.opacity = '1';
             }, 800);
         }
     </script>
