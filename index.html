@@ -3,108 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كلمات من القلب</title>
+    <title>عيد حب سعيد</title>
     <style>
         :root {
-            --bg: #f4f1ea; 
-            --text: #4a4a4a;
-            --accent: #9b8c7d;
+            --primary-gold: #d4af37;
+            --deep-red: #800000;
+            --dark-bg: #0a0a0a;
         }
 
         body {
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; background-color: var(--bg);
-            font-family: 'Times New Roman', serif; color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            text-align: center;
+        }
+
+        /* زر تشغيل الموسيقى المخفي */
+        #music-trigger {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 999;
+            cursor: pointer;
         }
 
         .container {
-            width: 85%; max-width: 400px;
-            text-align: center;
-            padding: 40px 20px;
-            transition: opacity 1s ease-in-out;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--primary-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
         }
 
-        h2 {
-            font-weight: 300; font-size: 1.2rem; line-height: 1.9;
-            margin-bottom: 50px; min-height: 100px;
+        h1 {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
         }
 
         button {
-            background: none; border: 1px solid var(--accent);
-            padding: 12px 35px; color: var(--accent);
-            cursor: pointer; font-size: 0.95rem; 
-            transition: all 0.4s ease;
-            letter-spacing: 1px;
-            border-radius: 2px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        button:hover, button:active {
-            background: var(--accent);
+        #yesBtn {
+            background: var(--primary-gold);
+            color: black;
+            font-weight: bold;
+        }
+
+        #noBtn {
+            background: var(--deep-red);
             color: white;
+            position: absolute;
+            right: -100px; /* سيتعدل بالـ JS */
         }
 
-        .fade-in { animation: fadeIn 1.5s forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* خلفية القلوب */
+        .heart {
+            position: absolute;
+            color: var(--deep-red);
+            font-size: 20px;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop playsinline>
-        <source src="music.mp3" type="audio/mpeg">
+    <div id="music-trigger" onclick="startSurprise()"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="container" id="box">
-        <h2 id="text" class="fade-in">مرت سنين طويلة.. وحبيت بهيج يوم بس أوصلج رسالة بسيطة.</h2>
-        <div id="actions">
-            <button onclick="start()">تفضل</button>
+    <div class="container" id="mainBox">
+        <h1 id="question">أنتِ أجمل شيء حدث لي.. هل تقبلين أن نكون معاً للأبد؟ ❤️</h1>
+        <div class="buttons">
+            <button id="yesBtn" onclick="celebrate()">نعم، طبعاً</button>
+            <button id="noBtn" onmouseover="moveButton()">لا</button>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById("myAudio");
-        let isPlaying = false;
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicTrigger = document.getElementById('music-trigger');
 
-        function start() {
-            if (!isPlaying) { audio.play(); isPlaying = true; }
-            step(1);
+        // وظيفة تشغيل الموسيقى وإخفاء الطبقة الشفافة
+        function startSurprise() {
+            bgMusic.play();
+            musicTrigger.style.display = 'none';
+            createHearts();
         }
 
-        const story = [
-            {
-                t: "الأيام اللي عشناها سوة، رغم إنها صارت بعيدة، بس بقت بذاكرتي كأجمل محطات حياتي.",
-                b: "شكراً لك"
-            },
-            {
-                t: "ما جيت حتى أطلب شي، ولا جيت حتى أفتح دفاتر قديمة.. جيت بس حتى أكولج: شكراً لأن جنتي بيوم من الأيام بحياتي.",
-                b: "كلام جميل"
-            },
-            {
-                t: "أتمنى من كل قلبي تكونين سعيدة وبخير، وين ما جنتي وبأي طريق اختاريته.",
-                b: "أتمنى لك المثل"
-            }
-        ];
-
-        function step(index) {
-            const box = document.getElementById('box');
-            box.style.opacity = '0';
-
-            setTimeout(() => {
-                const text = document.getElementById('text');
-                const actions = document.getElementById('actions');
-
-                if (index <= story.length) {
-                    const current = story[index - 1];
-                    text.innerText = current.t;
-                    actions.innerHTML = `<button onclick="step(${index + 1})">${current.b}</button>`;
-                } else {
-                    text.innerText = "كل عيد حب وأنتِ بخير.. وشكراً على كل ذكرى حلوة تركتيها بقلبي. وداعاً بسلام.";
-                    actions.innerHTML = `<div style="font-style: italic; opacity: 0.5; margin-top:20px;">انتهت الرسالة</div>`;
-                }
-                box.style.opacity = '1';
-            }, 800);
+        // تحريك الزر الهارب
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         }
-    </script>
-</body>
-</html>
+
+        // عند الضغط على "نعم"
+        function celebrate() {
+            document.getElementById('mainBox').innerHTML = `
+                <h1 style="color: #d4af37;">أحبكِ جداً! ❤️</h1>
+                <p>لقد جعلتِ يومي أجمل..</p>
+                <div style="font-size: 50px;">💍✨</div>
+            `;
+            setInterval(createHeart, 200);
+        }
+
+        // تأثير تساقط القلوب
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.
