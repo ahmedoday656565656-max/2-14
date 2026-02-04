@@ -3,119 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى أغلى من في القلب</title>
+    <title>عيد حب سعيد</title>
     <style>
-        :root {
-            --gold: #d4af37;
-            --dark-red: #4a0404;
-            --black: #050505;
-        }
-
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--black);
-            font-family: 'Amiri', serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #2c0000 0%, #000000 100%);
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: white;
         }
 
-        /* شاشة البداية لتفعيل الموسيقى */
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #1a1a1a, #000);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: 1s;
-        }
-
-        #overlay h2 {
-            color: var(--gold);
-            letter-spacing: 5px;
-            animation: pulse 2s infinite;
-        }
-
-        /* المحتوى الرئيسي */
-        .card {
-            display: none; /* مخفي في البداية */
+        /* حاوية المحتوى */
+        .container {
             text-align: center;
-            background: rgba(15, 15, 15, 0.9);
-            padding: 50px;
-            border: 2px solid var(--gold);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-            z-index: 10;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #d4af3744;
         }
 
-        h1 { color: white; margin-bottom: 30px; font-size: 1.8rem; }
+        h1 { color: #d4af37; font-size: 24px; margin-bottom: 30px; }
 
-        .btn-container {
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            min-height: 100px;
             position: relative;
-            height: 60px;
-            margin-top: 40px;
         }
 
         button {
-            padding: 12px 35px;
-            font-size: 1.2rem;
-            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
-            transition: 0.3s;
             font-weight: bold;
+            transition: transform 0.2s;
         }
 
-        #yesBtn {
-            background: var(--gold);
-            color: black;
+        #yesBtn { background: #d4af37; color: black; }
+        
+        /* الزر الهارب */
+        #noBtn { 
+            background: #ff4d4d; 
+            color: white; 
+            position: absolute; 
+            left: 55%; /* موقعه البدائي */
         }
 
-        #noBtn {
-            background: #800000;
-            color: white;
-            position: absolute;
+        /* زر الموسيقى المخفي/الصغير */
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
         }
 
-        /* قلوب متساقطة */
         .heart {
             position: absolute;
-            top: -20px;
             color: #ff0000;
-            font-size: 20px;
-            user-select: none;
-            pointer-events: none;
-            animation: fall linear forwards;
+            animation: float 4s infinite linear;
+            opacity: 0.7;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="initiate()">
-        <div style="font-size: 60px;">🎁</div>
-        <h2>اضغطي لفتح الرسالة</h2>
+    <button id="musicToggle" onclick="toggleMusic()">🎵</button>
+    <audio id="loveSong" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container" id="card">
+        <h1 id="question">هل تقبلين أن تكوني شريكة حياتي؟ ❤️</h1>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="celebrate()">نعم بالتأكيد</button>
+            <button id="noBtn" onmouseover="runAway()" onclick="runAway()">لا</button>
+        </div>
     </div>
 
-    <audio id="myAudio" loop>
-        <source src="https://
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const song = document.getElementById('loveSong');
+        let musicPlaying = false;
+
+        // وظيفة تشغيل الموسيقى
+        function toggleMusic() {
+            if (!musicPlaying) {
+                song.play();
+                musicPlaying = true;
+                document.getElementById('musicToggle').innerHTML = "⏸️";
+            } else {
+                song.pause();
+                musicPlaying = false;
+                document.getElementById('musicToggle').innerHTML = "🎵";
+            }
+        }
+
+        // وظيفة هروب الزر
+        function runAway() {
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            
+            noBtn.style.position = 'fixed'; // نغيره لـ fixed لكي يتحرك في كل الشاشة
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        // وظيفة الاحتفال عند الضغط على نعم
+        function celebrate() {
+            if(!musicPlaying) toggleMusic();
+            document.getElementById('card').innerHTML = `
+                <h1 style="font-size: 40px;">أحبكِ جداً! 💍❤️</h1>
+                <p>لقد اخترتِ السعادة الأبدية..</p>
+            `;
+            setInterval(createHeart, 300);
+        }
+
+        // إنشاء القلوب المتطايرة
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            heart.style.duration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+    </script>
+</body>
+</html>
