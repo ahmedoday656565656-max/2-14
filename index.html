@@ -110,8 +110,8 @@
             let isDrawing = false;
             function scratch(e) {
                 if (!isDrawing) return;
-                const x = e.pageX || e.touches[0].pageX;
-                const y = e.pageY || e.touches[0].pageY;
+                const x = e.pageX  e.touches[0].pageX;
+                const y = e.pageY  e.touches[0].pageY;
                 ctx.beginPath(); ctx.arc(x, y, 40, 0, Math.PI * 2); ctx.fill();
                 checkScratch();
             }
@@ -139,8 +139,10 @@
             const main = document.getElementById('main-content');
             main.style.display = 'block';
             setTimeout(() => { main.style.opacity = '1'; startTyping(); }, 100);
-            document.getElementById('myAudio').play();  }
-  كل عام وأنتِ بخير، يا من كنتِ وس تبقين الجزء الأرقى من حكايتي. مشاعر لم أستطع إخباركِ بها وجهاً لوجه. عسى أن تبتسمي، فهذا كل ما أرجوه.";
+            document.getElementById('myAudio').play();
+        }
+
+        const text = "  كل عام وأنتِ بخير، يا من كنتِ وس تبقين الجزء الأرقى من حكايتي.، ليعبرا عن مشاعر لم أستطع إخباركِ بها وجهاً لوجه. عسى أن تبتسمي، فهذا كل ما أرجوه.";
         let i = 0;
         function startTyping() {
             if (i < text.length) {
