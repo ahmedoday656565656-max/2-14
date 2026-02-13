@@ -92,4 +92,64 @@
         function stopHold() { clearInterval(holdTimer); if (progress < 100) { progress = 0; bar.style.width = '0%'; } }
 
         holdBtn.onmousedown = holdBtn.ontouchstart = startHold;
-        holdBtn.onmouseup = holdBtn.
+        holdBtn.onmouseup = holdBtn.ontouchend = stopHold;
+
+        // نظام مسح الشاشة (Scratch Card)
+        function showScratchZone() {
+            document.getElementById('touch-zone').style.display = 'none';
+            const zone = document.getElementById('scratch-zone');
+            zone.style.display = 'block';
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            
+            ctx.fillStyle = '#111'; // لون الطبقة التي سيتم مسحها
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-out';
+
+            let isDrawing = false;
+            function scratch(e) {
+                if (!isDrawing) return;
+                const x = e.pageX  e.touches[0].pageX;
+                const y = e.pageY  e.touches[0].pageY;
+                ctx.beginPath(); ctx.arc(x, y, 40, 0, Math.PI * 2); ctx.fill();
+                checkScratch();
+            }
+            canvas.onmousedown = canvas.ontouchstart = () => isDrawing = true;
+            canvas.onmouseup = canvas.ontouchend = () => isDrawing = false;
+            canvas.onmousemove = canvas.ontouchmove = scratch;
+
+            let cleared = false;
+            function checkScratch() {
+                if (cleared) return;
+                // بعد المسح لفترة، يظهر المحتوى تلقائياً
+                setTimeout(() => {
+                    cleared = true;
+                    zone.style.opacity = '0';
+                    setTimeout(() => {
+                        zone.style.display = 'none';
+                        showFinalContent();
+                    }, 1000);
+                }, 8000); // 8 ثواني من المسح كافية
+            }
+        }
+
+        // إظهار الرسالة النهائية والمعايدة
+        function showFinalContent() {
+            const main = document.getElementById('main-content');
+            main.style.display = 'block';
+            setTimeout(() => { main.style.opacity = '1'; startTyping(); }, 100);
+            document.getElementById('myAudio').play();
+        }
+
+        const text = "  كل عام وأنتِ بخير، يا من كنتِ وس تبقين الجزء الأرقى من حكايتي.، ليعبرا عن مشاعر لم أستطع إخباركِ بها وجهاً لوجه. عسى أن تبتسمي، فهذا كل ما أرجوه.";
+        let i = 0;
+        function startTyping() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i);
+                i++; setTimeout(startTyping, 75);
+            }
+        }
+    </script>
+</body>
+</html>
