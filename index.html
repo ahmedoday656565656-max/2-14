@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>إلى التي كانت..</title>
+    <title>إليكِ..</title>
     <style>
         :root {
             --gold: #d4af37;
-            --bg: #0a0a0a;
+            --bg: #000000;
         }
 
         body {
@@ -31,77 +31,81 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: black;
+            background: #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            transition: opacity 1s ease;
+            z-index: 999;
+            transition: opacity 0.8s ease;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top: 2px solid var(--gold);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(212, 175, 55, 0.1);
+            border-top: 3px solid var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 15px;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* المحتوى الرئيسي */
         .content {
             opacity: 0;
-            transition: opacity 2s ease;
-            width: 90%;
-            max-width: 500px;
+            visibility: hidden;
+            transition: opacity 1.5s ease;
+            width: 85%;
+            max-width: 450px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--gold);
-            font-weight: lighter;
-            margin-bottom: 20px;
+            font-weight: 300;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
         }
 
         #typewriter {
-            font-size: 1.1rem;
-            line-height: 2;
-            min-height: 100px;
-            margin-bottom: 30px;
-            color: #e0e0e0;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            min-height: 120px;
+            color: #ddd;
+            margin-bottom: 35px;
         }
 
         .btn {
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 12px 35px;
-            border-radius: 2px;
+            padding: 14px 40px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 2px;
-            transition: 0.5s;
-            opacity: 0; /* تظهر بعد انتهاء الكتابة */
+            opacity: 0;
+            transition: all 0.5s ease;
+            pointer-events: none;
         }
 
-        .btn.show { opacity: 1; }
+        .btn.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
 
         .btn:active {
             background: var(--gold);
-            color: black;
+            color: #000;
         }
 
-        /* تأثيرات الجزيئات */
+        /* جزيئات الخلفية */
         .particle {
             position: absolute;
-            pointer-events: none;
             background: var(--gold);
             border-radius: 50%;
-            opacity: 0.6;
+            pointer-events: none;
         }
 
     </style>
@@ -110,55 +114,65 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="font-size: 0.8rem; letter-spacing: 3px; color: #555;">جاري استرجاع الذكريات...</p>
+        <p style="margin-top: 20px; font-size: 0.9rem; color: var(--gold); letter-spacing: 1px;">
+            يتم الآن ترتيب الفوضى التي تركتِها..
+        </p>
     </div>
 
     <div class="content" id="mainContent">
-        <h1>رسالة خاصة</h1>
+        <h1>إلى مَن كانت تسكن هنا..</h1>
         <div id="typewriter"></div>
-        <button class="btn" id="playBtn" onclick="startExperience()">إفتح الذكرى</button>
+        <button class="btn" id="playBtn" onclick="startExperience()">إضغطي للبدء</button>
     </div>
 
-    <audio id="myAudio">
+    <audio id="myAudio" preload="auto">
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // 1. إخفاء اللودنك بعد 3 ثواني
-        window.onload = () => {
+        // إخفاء اللودنك وبدء العرض
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
+                const loader = document.getElementById('loader');
+                const content = document.getElementById('mainContent');
+                
+                loader.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('mainContent').style.opacity = '1';
+                    loader.style.display = 'none';
+                    content.style.visibility = 'visible';
+                    content.style.opacity = '1';
                     startTyping();
-                }, 1000);
-            }, 3000);
-        };
+                }, 800);
+            }, 3500); // مدة اللودنك (3.5 ثانية)
+        });
 
-        // 2. تأثير الكتابة
-        const text = "يقولون إن الوقت كفيل بالنسيان، لكني اكتشفت أن البرمجة أسهل من برمجة قلبي على غيابك.. ضغطة واحدة قد تعيد صدى ما ضاع منا.";
-        let i = 0;
+        // تأثير الكتابة (نص فخم وطويل)const text = "يقولون إن المسافات تقتل الشوق، لكنهم لم يخبرونا أن الأكواد لا تستطيع تشفير الذكريات.. حاولتُ حذف كل شيء، لكني وجدتُ أن اسمكِ هو كلمة السر الوحيدة التي يرفض قلبي نسيانها. ضغطة واحدة، ولتستمعي لما عجزتُ عن قوله.";
+        let index = 0;
+        
         function startTyping() {
-            if (i < text.length) {
-                document.getElementById("typewriter").innerHTML += text.charAt(i);
-                i++;setTimeout(startTyping, 70); // سرعة الكتابة
+            const display = document.getElementById("typewriter");
+            if (index < text.length) {
+                display.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(startTyping, 60); // سرعة الكتابة
             } else {
                 document.getElementById("playBtn").classList.add("show");
             }
         }
 
-        // 3. التفاعل عند الضغط (تشغيل الصوت + جزيئات)
         function startExperience() {
             const audio = document.getElementById("myAudio");
             audio.play();
 
-            // إنشاء جزيئات متطايرة
-            for(let i=0; i<30; i++) {
+            // تأثير الجزيئات المتطايرة
+            for(let i=0; i<40; i++) {
                 createParticle();
             }
 
-            document.getElementById("playBtn").innerHTML = "استمعي الآن..";
+            const btn = document.getElementById("playBtn");
+            btn.innerHTML = "استمعي بقلبكِ..";
+            btn.style.borderColor = "white";
+            btn.style.color = "white";
         }
 
         function createParticle() {
@@ -166,26 +180,23 @@
             p.className = 'particle';
             document.body.appendChild(p);
             
-            const size = Math.random() * 5 + 2 + 'px';
+            const size = Math.random() * 4 + 1 + 'px';
             p.style.width = size;
             p.style.height = size;
-            
             p.style.left = '50%';
-            p.style.top = '60%';
+            p.style.top = '65%';
             
-            const destinationX = (Math.random() - 0.5) * 300;
-            const destinationY = (Math.random() - 0.5) * 300;
+            const destX = (Math.random() - 0.5) * 400;
+            const destY = (Math.random() - 0.5) * 400;
             
-            const anim = p.animate([
+            p.animate([
                 { transform: 'translate(0, 0)', opacity: 1 },
-                { transform: translate(${destinationX}px, ${destinationY}px), opacity: 0 }
+                { transform: translate(${destX}px, ${destY}px), opacity: 0 }
             ], {
-                duration: 2000 + Math.random() * 1000,
-                easing: 'cubic-bezier(0, .9, .57, 1)',
+                duration: 2500,
+                easing: 'ease-out',
                 fill: 'forwards'
-            });
-            
-            anim.onfinish = () => p.remove();
+            }).onfinish = () => p.remove();
         }
     </script>
 </body>
