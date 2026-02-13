@@ -1,126 +1,161 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>عيد حب سعيد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إليكِ.. بعيداً عن ضجيج العالم</title>
     <style>
         body {
             margin: 0;
-            height: 100vh;
-            background: #fff5f5; /* خلفية هادئة جداً */
-            font-family: sans-serif;
-            overflow: hidden;
+            padding: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, #1a1a1a, #000); /* أسود ملكي */
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            padding: 30px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 85%;
+            max-width: 400px;
         }
 
         h1 {
-            color: #d63384;
-            font-size: 2rem;
-            margin-bottom: 50px;
-            z-index: 10;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeIn 3s forwards;
         }
 
-        /* زر نعم */
-        #yesBtn {
+        p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #d1d1d1;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 4s forwards 1s;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
             padding: 15px 40px;
-            font-size: 20px;
-            background-color: #d63384;
-            color: white;
-            border: none;
-            border-radius: 50px;
+            font-size: 0.9rem;
+            border-radius: 30px;
             cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            outline: none;
         }
 
-        /* الزر الهارب (لا) */
-        #noBtn {
-            padding: 15px 40px;
-            font-size: 20px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            position: absolute; /* ضروري جداً للهرب */
-            transition: 0.1s; /* سرعة الهروب */
-            z-index: 100;
+        .btn:active {
+            background: #fff;
+            color: #000;
+            transform: scale(0.9);
         }
 
-        .heart {
+        /* أنيميشن الظهور */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تأثير النجوم في الخلفية */
+        .stars-container {
             position: absolute;
-            color: rgba(214, 51, 132, 0.2);
-            font-size: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            animation: fall 5s linear infinite;
         }
 
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: moveUp linear infinite;
+        }
+
+        @keyframes moveUp {
+            from { transform: translateY(100vh); }
+            to { transform: translateY(-10vh); }
+        }
+
+        .footer-note {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.7rem;
+            color: #555;
+            width: 100%;
         }
     </style>
 </head>
-<body onclick="startMusic()">
+<body>
 
-    <h1 id="msg">ممكن آخذ من وقتك لحظة؟ <br> هل تقبلين أن نكون معاً للأبد؟</h1>
+    <div class="stars-container" id="stars"></div>
 
-    <div style="display: flex; gap: 30px;">
-        <button id="yesBtn" onclick="showLove()">نعم</button>
-        <button id="noBtn" onmouseover="moveNo()" onclick="moveNo()">لا</button>
+    <div class="container">
+        <h1>رسالة لم يكتبها النسيان</h1>
+        <p>
+            بين كل سطر برمجـي وآخر، كنتِ أنتِ المعنى الحقيقي الذي لم أستطع صياغته في كود.. <br>
+            هذه الصفحة صنعتها لأجلكِ، لتخبركِ أن بعض النهايات لا تعني الانطفاء.
+        </p>
+        <button class="btn" onclick="playAndStyle()">اضغطي هنا</button>
     </div>
 
-    <audio id="mySong" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <div class="footer-note">صُنع بصدق.. لأجل ذكرى لا تغيب</div>
+
+    <audio id="myAudio">
+        <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const noBtn = document.getElementById('noBtn');
-        const song = document.getElementById('mySong');
-        let musicStarted = false;
+        function playAndStyle() {
+            var audio = document.getElementById("myAudio");
+            var btn = document.querySelector('.btn');
+            
+            // تشغيل الأغنية
+            audio.play();
 
-        // تشغيل الموسيقى عند أي ضغطة في الشاشة
-        function startMusic() {
-            if (!musicStarted) {
-                song.play();
-                musicStarted = true;
+            // تغيير نص الزر وتأثيره بعد الضغط
+            btn.innerHTML = "استمعي الآن..";
+            btn.style.borderColor = "#ff4d4d";
+            btn.style.color = "#ff4d4d";
+
+            // تنبيه بسيط لمستخدمي الآيفون (عشان وضع الصامت)
+            if (audio.paused) {alert("يرجى التأكد من إلغاء وضع الصامت ورفع مستوى الصوت");
             }
         }
 
-        // وظيفة الهروب - تعمل بمجرد لمس الماوس للزر
-        function moveNo() {
-            // حساب أبعاد الشاشة لمنع الزر من الاختفاء خارجها
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
-
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-
-            noBtn.style.left = newX + 'px';
-            noBtn.style.top = newY + 'px';
-        }
-
-        // عند الضغط على نعم
-        function showLove() {
-            document.body.innerHTML = `
-                <h1 style="color: #d63384;">أحبكِ جداً! ❤️💍</h1>
-                <p>لقد جعلتِ هذا اليوم هو الأجمل في حياتي</p>
-            `;
-            setInterval(createHeart, 200);
-        }
-
-        // إنشاء قلوب تتساقط هادئة
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '-20px';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+        // توليد النجوم بشكل عشوائي
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 70; i++) {
+            let star = document.createElement('div');
+            star.className = 'star';
+            let size = Math.random() * 2 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = (Math.random() * 10 + 5) + 's';
+            star.style.animationDelay = (Math.random() * 5) + 's';
+            starsContainer.appendChild(star);
         }
     </script>
 </body>
