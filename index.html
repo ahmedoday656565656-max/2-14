@@ -92,8 +92,7 @@
         function stopHold() { clearInterval(holdTimer); if (progress < 100) { progress = 0; bar.style.width = '0%'; } }
 
         holdBtn.onmousedown = holdBtn.ontouchstart = startHold;
-        holdBtn.onmouseup = holdBtn.
-            ontouchend = stopHold;
+        holdBtn.onmouseup = holdBtn.ontouchend = stopHold;
 
         // نظام مسح الشاشة (Scratch Card)
         function showScratchZone() {
