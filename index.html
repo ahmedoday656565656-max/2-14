@@ -2,107 +2,153 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى مَن كانت..</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إليكِ.. في يوم ميلادكِ</title>
     <style>
-        body {
-            margin: 0;
-            background: #000;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
+        :root { --gold: #d4af37; --bg: #000; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); color: white; font-family: 'serif';
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* شاشة التحميل - Loading */
+        /* 1. شاشة اللودنك */
         #loader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            position: fixed; inset: 0; background: #000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; transition: opacity 1s;
         }
-
-        .spinner {
-            width: 40px; height: 40px;
-            border: 3px solid #333;
-            border-top: 3px solid #d4af37;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
+        .ring { width: 50px; height: 50px; border: 2px solid #222; border-top: 2px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* المحتوى */
-        #mainContent {
-            display: none; /* مخفي في البداية */
-            width: 85%;
-            max-width: 400px;
-        }
+        /* 2. شاشة البصمة */
+        #touch-zone { display: none; text-align: center; z-index: 1500; }
+        .fingerprint { width: 70px; height: 70px; border: 1px solid var(--gold); border-radius: 50%; margin: 20px auto; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .progress-bar { width: 0%; height: 2px; background: var(--gold); margin-top: 10px; transition: 0.1s; }
 
-        h1 { color: #d4af37; font-size: 1.4rem; font-weight: 300; }
-        #typewriter { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin: 20px 0; min-height: 100px; }
-        
-        .btn {
-            background: none; border: 1px solid #d4af37; color: #d4af37;
-            padding: 12px 30px; border-radius: 5px; cursor: pointer;
-            opacity: 0; transition: 1s;
+        /* 3. شاشة مسح الغبار */
+        #scratch-zone {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            cursor: crosshair; touch-action: none;
         }
+        #scratch-canvas { width: 100%; height: 100%; }
+
+        /* 4. المحتوى النهائي */
+        #main-content {
+            display: none; opacity: 0; text-align: center; width: 85%; max-width: 450px;
+            transition: opacity 2s ease; z-index: 500;
+        }
+        h1 { color: var(--gold); font-size: 1.6rem; margin-bottom: 20px; font-weight: 300; }
+        #typewriter { font-size: 1.1rem; line-height: 1.9; color: #ddd; }
     </style>
 </head>
 <body>
 
     <div id="loader">
-        <div class="spinner"></div>
-        <p style="margin-top: 20px; color: #d4af37; font-size: 0.9rem;">
-            لحظة.. أستعيد ملامحكِ من الذاكرة
-        </p>
+        <div class="ring"></div>
+        <p style="margin-top: 25px; color: var(--gold); letter-spacing: 2px;">هنة الحلوات لازم ينتظرن..</p>
     </div>
 
-    <div id="mainContent">
-        <h1>رسالة لم تكتمل..</h1>
+    <div id="touch-zone">
+        <p style="color: #888; margin-bottom: 20px;">استمري بالضغط.. لنستعيد الوقت</p>
+        <div class="fingerprint" id="hold-btn">❤️</div>
+        <div style="width: 150px; background: #222; margin: 0 auto;"><div id="bar" class="progress-bar"></div></div>
+    </div>
+
+    <div id="scratch-zone">
+        <canvas id="scratch-canvas"></canvas>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; color: var(--gold); border: 1px solid; padding: 10px; opacity: 0.5;">
+            امسحي الشاشة لتري ما خلف الغياب..
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1>كل عام وأنتِ الأجمل..</h1>
         <div id="typewriter"></div>
-        <button class="btn" id="playBtn" onclick="startExperience()">إفتح الذكرى</button>
     </div>
 
-    <audio id="myAudio">
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="myAudio"><source src="music.mp3" type="audio/mpeg"></audio>
 
     <script>
-        // هذا الجزء هو المسؤول عن إخفاء اللودنك بعد 4 ثواني بالضبط
-        setTimeout(function() {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            startTyping();
-        }, 4000); 
+        // تتابع الشاشات
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('touch-zone').style.display = 'block';
+            }, 1000);
+        }, 5000);
 
-        // تأثير الكتابة
-        const text = "لم يكن الفراق اختياراً، بل كان قدراً كتبناه بأيدينا.. صنعتُ هذا الموقع الصغير فقط لأقول لكِ أنني لا زلتُ أذكر التفاصيل التي نسيتها أنتِ. ضغطة واحدة، لتسمعي ما بقي من حكايتنا.";
+        // نظام البصمة
+        let holdTimer, progress = 0;
+        const holdBtn = document.getElementById('hold-btn'), bar = document.getElementById('bar');
+
+        function startHold() {
+            holdTimer = setInterval(() => {
+                progress += 4; bar.style.width = progress + '%';
+                if (progress >= 100) { clearInterval(holdTimer); showScratchZone(); }
+            }, 50);
+        }
+        function stopHold() { clearInterval(holdTimer); if (progress < 100) { progress = 0; bar.style.width = '0%'; } }
+
+        holdBtn.onmousedown = holdBtn.ontouchstart = startHold;
+        holdBtn.onmouseup = holdBtn.ontouchend = stopHold;
+
+        // نظام مسح الشاشة (Scratch Card)
+        function showScratchZone() {
+            document.getElementById('touch-zone').style.display = 'none';
+            const zone = document.getElementById('scratch-zone');
+            zone.style.display = 'block';
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            
+            ctx.fillStyle = '#111'; // لون الطبقة التي سيتم مسحها
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-out';
+
+            let isDrawing = false;
+            function scratch(e) {
+                if (!isDrawing) return;
+                const x = e.pageX || e.touches[0].pageX;
+                const y = e.pageY || e.touches[0].pageY;
+                ctx.beginPath(); ctx.arc(x, y, 40, 0, Math.PI * 2); ctx.fill();
+                checkScratch();
+            }
+            canvas.onmousedown = canvas.ontouchstart = () => isDrawing = true;
+            canvas.onmouseup = canvas.ontouchend = () => isDrawing = false;
+            canvas.onmousemove = canvas.ontouchmove = scratch;
+
+            let cleared = false;
+            function checkScratch() {
+                if (cleared) return;
+                // بعد المسح لفترة، يظهر المحتوى تلقائياً
+                setTimeout(() => {
+                    cleared = true;
+                    zone.style.opacity = '0';
+                    setTimeout(() => {
+                        zone.style.display = 'none';
+                        showFinalContent();
+                    }, 1000);
+                }, 8000); // 8 ثواني من المسح كافية
+            }
+        }
+
+        // إظهار الرسالة النهائية والمعايدة
+        function showFinalContent() {
+            const main = document.getElementById('main-content');
+            main.style.display = 'block';
+            setTimeout(() => { main.style.opacity = '1'; startTyping(); }, 100);
+            document.getElementById('myAudio').play();
+        }
+
+        const text = "اليوم ليس مجرد يوم ميلادكِ، بل هو ذكرى ميلاد أجمل ما عرفه قلبي.. كل عام وأنتِ بخير، يا من كنتِ وس تبقين الجزء الأرقى من حكايتي. أهدي لكِ هذه الأغنية وهذا الكود، ليعبرا عن مشاعر لم أستطع إخباركِ بها وجهاً لوجه. عسى أن تبتسمي، فهذا كل ما أرجوه.";
         let i = 0;
         function startTyping() {
             if (i < text.length) {
                 document.getElementById("typewriter").innerHTML += text.charAt(i);
-                i++;
-                setTimeout(startTyping, 60);
-            } else {
-                document.getElementById("playBtn").style.opacity = "1";
+                i++; setTimeout(startTyping, 75);
             }
-        }
-
-        function startExperience() {
-            var audio = document.getElementById("myAudio");
-            audio.play().catch(function(error) {
-                console.log("Audio not found but site continues");
-            });
-            document.getElementById("playBtn").innerHTML = "استمعي الآن..";
         }
     </script>
 </body>
